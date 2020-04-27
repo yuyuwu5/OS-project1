@@ -4,7 +4,7 @@
 
 // syscall 333
 
-asmlinkage long time_pj1(){
+asmlinkage long sys_time_pj1(void){
 		static const long BASE = 1000000000;
 		struct timespec t;
 		getnstimeofday(&t);
