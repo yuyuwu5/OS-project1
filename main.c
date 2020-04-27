@@ -26,7 +26,7 @@
 
 typedef struct process{
 	char name[MAX_PROCESS];
-	int ready, exec;
+	int ready, exec, start;
 	pid_t pid;
 }Process;
 
@@ -76,25 +76,50 @@ int createProcess(Process p){
 	useCpu(p.pid, CPU_CHILD);
 	return p.pid;
 }
-int next(int N, int strategy, Process p[MAX_PROCESS]){
+int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer){
 	if (strategy == FIFO){
-		for(int i = 0; i < N; i++){
+		if (run_process > -1){
+			return run_process;
+		} for(int i = 0; i < N; i++){
 			if (p[i].exec > 0 && p[i].pid > 0){
 				//printf("%s run\n", p[i].name);
 				return i;
 			}
 		}
-	}
-	return -1;
+	} else if (strategy == RR){
+		if ((timer - p[run_process].start) % 500 == 0){
+			do{
+				run_process = (run_process+1)%N;
+			} while(p[run_process].pid == -1 || p[run_process].exec == 0);
+		} return run_process;
+	} else if (strategy == SJF){
+		if (run_process > -1){
+			return run_process;
+		} for(int i = 0; i < N; i++){
+			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
+				run_process = i;
+			}
+		} return run_process;
+	} else if (strategy == PSJF){
+		for(int i = 0; i < N; i++){
+			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
+				run_process = i;
+			}
+		} return run_process;
+	} return -1;
 }
 
 void task(int strategy){
 	int N;
-	scanf("%d", &N);
+	if(scanf("%d", &N) < 0){
+		ERR_EXIT("scanf error");
+	}
 	Process p[MAX_PROCESS];
 	for(int i = 0; i< N; i++){
-		scanf("%s%d%d", p[i].name, &p[i].ready, &p[i].exec);
-		p[i].pid = -1;
+		if(scanf("%s%d%d", p[i].name, &p[i].ready, &p[i].exec)<0){
+			ERR_EXIT("scanf error");
+		}
+		p[i].pid = p[i].start = -1;
 	}
 	qsort(p, N, sizeof(Process),cmp);
 	//for(int i = 0; i < N; i++)printf("%d\n", p[i].ready);
@@ -112,11 +137,13 @@ void task(int strategy){
 				printf("%d\n", p[i].pid);
 			}
 		}
-		int todo = next(N, strategy, p);
+		int todo = next(N, strategy, p, run_process, timer);
 		printf("todo %d\n", todo);
 		if (run_process != todo){
 			setPriority(p[todo].pid, PRIORITY_HIGH);
 			setPriority(p[run_process].pid, PRIORITY_LOW);
+			p[run_process].start = -1;
+			p[todo].start = timer;
 			run_process = todo;
 		}
 		UNIT_TIME();
@@ -129,7 +156,9 @@ void task(int strategy){
 
 int main(){
 	char schdule_type[8];
-	scanf("%s", schdule_type);
+	if(scanf("%s", schdule_type) < 0){
+		ERR_EXIT("scanf error");
+	}
 	useCpu(getpid(), CPU_PARENT);
 	setPriority(getpid(), PRIORITY_HIGH);
 	int strategy;
