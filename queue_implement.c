@@ -19,6 +19,7 @@
 #define PRIORITY_LOW 1
 #define CPU_PARENT 0
 #define CPU_CHILD 1
+#define RR_CYCLE 50
 #define FIFO 0
 #define RR 1
 #define SJF 2
@@ -28,7 +29,8 @@
 
 typedef struct process{
 	char name[MAX_PROCESS];
-	int ready, exec, start;
+	int ready, exec, start, id;
+	struct process *next;
 	pid_t pid;
 }Process;
 
@@ -78,6 +80,7 @@ int createProcess(Process p){
 	useCpu(p.pid, CPU_CHILD);
 	return p.pid;
 }
+/*
 int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer){
 	if (strategy == FIFO){
 		if (run_process > -1){
@@ -110,9 +113,86 @@ int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer
 		} return run_process;
 	} return -1;
 }
+*/
+
+void insert(int strategy, Process **head, Process **tail, Process *p){
+	if(!(*head)){
+		*head = p;
+		*tail = p;
+		return;
+	}
+	switch(strategy){
+		case FIFO: case RR:{
+			(*tail)->next = p;
+			*tail = p;
+			break;
+						   }
+		case SJF:{
+			Process *h;
+			h = *head;
+			while(h->next && p->exec > h->next->exec){
+				h = h->next;
+			}
+			p->next = h->next;
+			h->next = p;
+			if(!p->next){
+				*tail = p;
+			}
+			break;
+				 }
+		case PSJF:{
+			if(p->exec < (*head)->exec){
+				p->next = *head;
+				*head = p;
+			} else{
+				Process *h = *head;
+				while(h->next && p->exec > h->next->exec){
+					h = h->next;
+				}
+				p->next = h->next;
+				h->next = p;
+			}
+			if(!p->next){
+				*tail = p;
+			}
+			break;
+				  }
+		default:{
+			ERR_EXIT("No such strategy !");
+			break;
+				}
+	}
+}
+int get(Process **head, Process **tail, int timer, int strategy){
+	switch (strategy){
+		case FIFO: case SJF: case PSJF:{
+			if(*head) return (*head)->id;
+			return -1;
+			break;
+		} 
+		case RR:{
+			if(!(*head)) return -1;
+			//printf("%d %d\n", timer, (*head)->start);
+			if ((*head)!=(*tail) && (timer-((*head)->start))%RR_CYCLE == 0){
+				printf("RR cycle");
+				if((*head)->next){
+					(*tail)->next = (*head);
+					(*tail) = (*head);
+					(*head) = (*head)->next;
+					(*tail)->next = NULL;
+					//Process *t = (*head);
+					//t->next = NULL;
+				}
+			}
+			return (*head)->id;
+		}
+	}
+}
+
 
 void task(int strategy){
 	int N;
+	Process *head = NULL, *tail = NULL;
 	if(scanf("%d", &N) < 0){
 		ERR_EXIT("scanf error");
 	}
@@ -122,35 +202,43 @@ void task(int strategy){
 			ERR_EXIT("scanf error");
 		}
 		p[i].pid = p[i].start = -1;
+		p[i].next = NULL;
+		p[i].id = i;
 	}
 	qsort(p, N, sizeof(Process),cmp);
-	//for(int i = 0; i < N; i++)printf("%d\n", p[i].ready);
 	int timer = 0, all_process = N, run_process = -1;
 	while(all_process > 0){
 		if(run_process != -1 && p[run_process].exec == 0){
+			printf("%s end at %d\n", p[run_process].name, timer);
 			//waitpid(p[run_process].pid, NULL, 0);
 			run_process = -1;
 			all_process--;
+			head = head->next;
 		}
 		for(int i = 0; i < N; i++){
 			if(p[i].ready == timer){
-				printf("Create new process at %d\n", timer);
-				p[i].pid = createProcess(p[i]);
-				printf("%d\n", p[i].pid);
+				printf("Create new process %s at %d\n", p[i].name, timer);
+				//p[i].pid = createProcess(p[i]);
+				insert(strategy, &head, &tail, &p[i]);
+				//printf("%s %d create\n", p[i].name, p[i].pid);
 			}
 		}
-		int todo = next(N, strategy, p, run_process, timer);
-		printf("todo %d\n", todo);
+		int todo = get(&head, &tail, timer, strategy);
+		//next(N, strategy, p, run_process, timer);
+		//printf("todo %d\n", todo);
 		if (run_process != todo){
-			setPriority(p[todo].pid, PRIORITY_HIGH);
+			//setPriority(p[todo].pid, PRIORITY_HIGH);
 			p[todo].start = timer;
+			//printf("%s %d run\n", p[todo].name, p[todo].pid);
 			if (run_process != -1){
-				setPriority(p[run_process].pid, PRIORITY_LOW);
+				//setPriority(p[run_process].pid, PRIORITY_LOW);
+				printf("%s be preempt at %d by %s\n", p[run_process].name, timer, p[todo].name);
 				p[run_process].start = -1;
 			}
 			run_process = todo;
 		}
-		UNIT_TIME();
+		//UNIT_TIME();
+		//printf("time: %d run %s\n", timer, p[run_process].name);
 		if (run_process != -1){
 			p[run_process].exec--;
 		}
@@ -163,6 +251,7 @@ int main(){
 	if(scanf("%s", schdule_type) < 0){
 		ERR_EXIT("scanf error");
 	}
+	/*
 	struct rlimit old, new;
 	new.rlim_cur = RLIM_INFINITY;
 	new.rlim_max = RLIM_INFINITY;
@@ -172,13 +261,14 @@ int main(){
 	if(setrlimit(RLIMIT_RTTIME, &new) < 0){
 		ERR_EXIT("set resorce error");
 	}
+	*/
 	//set cpu usege to infinity
 	//a = getrlimit(RLIMIT_CPU, &old);
-	useCpu(getpid(), CPU_PARENT);
-	setPriority(getpid(), PRIORITY_HIGH);
-	long long c = 10;
-	while(c--)printf("%d\n", getpid());
-	/*
+	//useCpu(getpid(), CPU_PARENT);
+	//setPriority(getpid(), PRIORITY_HIGH);
+	//long long c = 10;
+	//while(c--)printf("%d\n", getpid());
+	
 	int strategy;
 	if (strcmp(schdule_type, "FIFO")==0){
 		strategy = FIFO;
@@ -192,6 +282,6 @@ int main(){
 		ERR_EXIT("Policy Not found!");
 	}
 	task(strategy);
-	*/
+	
 	//puts("Done!!!");
 }
