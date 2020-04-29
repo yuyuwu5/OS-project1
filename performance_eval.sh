@@ -11,7 +11,7 @@ outDir="output/"
 for exp in "FIFO_" "RR_" "SJF_" "PSJF_";do
 	for n in "1" "2" "3" "4" "5"; do
 		sudo dmesg -c
-		sudo ./queue_implement < $testDir$exp$n.txt > $outDir$exp$n'_stdout.txt'
+		sudo ./queue_implement_scheduler < $testDir$exp$n.txt > $outDir$exp$n'_stdout.txt'
 		dmesg | grep Project1 > $outDir$exp$n'_dmesg.txt'
 		echo $exp'-'$n >> ExpResult.txt
 		python3 eval.py --file $outDir$exp$n'_dmesg.txt' --perfect Vperfect.txt --unit $unit_time >> ExpResult.txt

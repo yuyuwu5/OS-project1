@@ -191,7 +191,7 @@ void task(int strategy){
 		if(run_process != -1 && p[run_process].exec == 0){
 			fprintf(perfect, "%d end at %d\n", p[run_process].pid, timer);
 			fflush(perfect);
-			fprintf(stderr, "%d end at %d\n", p[run_process].pid, timer);
+			//fprintf(stderr, "%d end at %d\n", p[run_process].pid, timer);
 			waitpid(p[run_process].pid, NULL, 0);
 			run_process = -1;
 			all_process--;
@@ -206,7 +206,7 @@ void task(int strategy){
 					has_job = timer;
 				}
 				fprintf(perfect,"Create new process %d at %d\n", p[i].pid, timer);
-				fprintf(stderr, "Create new process %d at %d\n", p[i].pid, timer);
+				//fprintf(stderr, "Create new process %d at %d\n", p[i].pid, timer);
 				fflush(perfect);
 			}
 		}
@@ -253,7 +253,7 @@ int main(){
 	//a = getrlimit(RLIMIT_CPU, &old);
 	useCpu(getpid(), CPU_PARENT);
 	setPriority(getpid(), SCHED_FIFO, PRIORITY_HIGH);
-	fprintf(stderr,"Scheduler pid %d\n", getpid());
+	//fprintf(stderr,"Scheduler pid %d\n", getpid());
 
 	int strategy;
 	if (strcmp(schdule_type, "FIFO")==0){

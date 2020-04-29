@@ -1,0 +1,326 @@
+FIFO_-1
+perfect  10829  , start 0.000000, end_time 500.000000
+real_exp        , start 0.000000, end_time 534.918150
+
+perfect  10830  , start 0.000000, end_time 1000.000000
+real_exp        , start 25.454537, end_time 1065.365646
+
+perfect  10831  , start 0.000000, end_time 1500.000000
+real_exp        , start 0.391317, end_time 1555.293570
+
+perfect  10832  , start 0.000000, end_time 2000.000000
+real_exp        , start 2.636477, end_time 2054.564178
+
+perfect  10833  , start 0.000000, end_time 2500.000000
+real_exp        , start 5.008772, end_time 2544.033710
+
+FIFO_-2
+perfect  10842  , start 0.000000, end_time 80000.000000
+real_exp        , start 0.000000, end_time 82376.561201
+
+perfect  10843  , start 100.000000, end_time 85000.000000
+real_exp        , start 103.248964, end_time 87065.164543
+
+perfect  10844  , start 200.000000, end_time 86000.000000
+real_exp        , start 199.742177, end_time 87860.680145
+
+perfect  10845  , start 300.000000, end_time 87000.000000
+real_exp        , start 295.916787, end_time 88531.495665
+
+FIFO_-3
+perfect  10862  , start 0.000000, end_time 8000.000000
+real_exp        , start 0.000000, end_time 8034.817246
+
+perfect  10863  , start 200.000000, end_time 13000.000000
+real_exp        , start 208.822967, end_time 13005.669617
+
+perfect  10864  , start 300.000000, end_time 16000.000000
+real_exp        , start 290.300535, end_time 15932.027946
+
+perfect  10865  , start 400.000000, end_time 17000.000000
+real_exp        , start 387.728062, end_time 16872.387408
+
+perfect  10866  , start 500.000000, end_time 18000.000000
+real_exp        , start 484.984092, end_time 17814.957272
+
+perfect  10867  , start 500.000000, end_time 19000.000000
+real_exp        , start 487.599836, end_time 18734.291844
+
+perfect  10868  , start 600.000000, end_time 23000.000000
+real_exp        , start 581.569684, end_time 22555.551870
+
+FIFO_-4
+perfect  10883  , start 0.000000, end_time 2000.000000
+real_exp        , start 0.000000, end_time 1987.884569
+
+perfect  10884  , start 500.000000, end_time 2500.000000
+real_exp        , start 479.787207, end_time 2480.750803
+
+perfect  10885  , start 500.000000, end_time 2700.000000
+real_exp        , start 480.593318, end_time 2663.744228
+
+perfect  10886  , start 1500.000000, end_time 3200.000000
+real_exp        , start 1442.833172, end_time 3145.481162
+
+FIFO_-5
+perfect  10895  , start 0.000000, end_time 8000.000000
+real_exp        , start 0.000000, end_time 8221.971105
+
+perfect  10896  , start 200.000000, end_time 13000.000000
+real_exp        , start 224.557527, end_time 13241.543947
+
+perfect  10897  , start 200.000000, end_time 16000.000000
+real_exp        , start 215.229019, end_time 16231.300124
+
+perfect  10898  , start 400.000000, end_time 17000.000000
+real_exp        , start 419.280718, end_time 17197.504068
+
+perfect  10899  , start 400.000000, end_time 18000.000000
+real_exp        , start 421.034710, end_time 18127.816260
+
+perfect  10900  , start 600.000000, end_time 19000.000000
+real_exp        , start 625.507149, end_time 19068.079531
+
+perfect  10901  , start 600.000000, end_time 23000.000000
+real_exp        , start 611.651432, end_time 22926.359225
+
+RR_-1
+perfect  10916  , start 0.000000, end_time 500.000000
+real_exp        , start 15.908342, end_time 517.771829
+
+perfect  10917  , start 0.000000, end_time 1000.000000
+real_exp        , start 12.897774, end_time 1000.859091
+
+perfect  10918  , start 0.000000, end_time 1500.000000
+real_exp        , start 0.000000, end_time 1495.734048
+
+perfect  10919  , start 0.000000, end_time 2000.000000
+real_exp        , start 0.325920, end_time 1978.774662
+
+perfect  10920  , start 0.000000, end_time 2500.000000
+real_exp        , start 10.493924, end_time 2448.308956
+
+RR_-2
+perfect  10929  , start 600.000000, end_time 8100.000000
+real_exp        , start 600.000000, end_time 7898.479757
+
+perfect  10930  , start 800.000000, end_time 9600.000000
+real_exp        , start 793.149385, end_time 9418.916195
+
+RR_-3
+perfect  10943  , start 3600.000000, end_time 18200.000000
+real_exp        , start 3500.881974, end_time 17575.484217
+
+perfect  10941  , start 1200.000000, end_time 19700.000000
+real_exp        , start 1200.000000, end_time 19171.004824
+
+perfect  10942  , start 2400.000000, end_time 20200.000000
+real_exp        , start 2370.419366, end_time 19769.599485
+
+perfect  10946  , start 5800.000000, end_time 28200.000000
+real_exp        , start 5598.083138, end_time 27514.954776
+
+perfect  10945  , start 5200.000000, end_time 30200.000000
+real_exp        , start 5025.437535, end_time 29546.784584
+
+perfect  10944  , start 4800.000000, end_time 31200.000000
+real_exp        , start 4642.931968, end_time 30603.213955
+
+RR_-4
+perfect  10964  , start 400.000000, end_time 5500.000000
+real_exp        , start 386.566457, end_time 5324.402124
+
+perfect  10965  , start 500.000000, end_time 6000.000000
+real_exp        , start 482.992443, end_time 5859.887966
+
+perfect  10966  , start 500.000000, end_time 6500.000000
+real_exp        , start 484.970982, end_time 6417.331793
+
+perfect  10963  , start 300.000000, end_time 14500.000000
+real_exp        , start 289.604182, end_time 14150.896341
+
+perfect  10967  , start 600.000000, end_time 18500.000000
+real_exp        , start 623.132567, end_time 18038.877746
+
+perfect  10962  , start 200.000000, end_time 20000.000000
+real_exp        , start 192.819349, end_time 19573.091394
+
+perfect  10961  , start 0.000000, end_time 23000.000000
+real_exp        , start 0.000000, end_time 22617.527896
+
+RR_-5
+perfect  10983  , start 400.000000, end_time 5500.000000
+real_exp        , start 383.843546, end_time 5337.649294
+
+perfect  10984  , start 400.000000, end_time 6000.000000
+real_exp        , start 384.154527, end_time 5851.801247
+
+perfect  10985  , start 600.000000, end_time 7000.000000
+real_exp        , start 574.834359, end_time 6815.656372
+
+perfect  10982  , start 200.000000, end_time 14500.000000
+real_exp        , start 192.291291, end_time 14130.972231
+
+perfect  10986  , start 600.000000, end_time 18500.000000
+real_exp        , start 575.984835, end_time 18023.652799
+
+perfect  10981  , start 200.000000, end_time 20000.000000
+real_exp        , start 192.194491, end_time 19516.763022
+
+perfect  10980  , start 0.000000, end_time 23000.000000
+real_exp        , start 0.000000, end_time 22612.445342
+
+SJF_-1
+perfect  11003  , start 0.000000, end_time 2000.000000
+real_exp        , start 1.866189, end_time 1981.764956
+
+perfect  11004  , start 100.000000, end_time 3000.000000
+real_exp        , start 96.092291, end_time 2960.506760
+
+perfect  11005  , start 200.000000, end_time 7000.000000
+real_exp        , start 192.061562, end_time 6874.453839
+
+perfect  11002  , start 0.000000, end_time 14000.000000
+real_exp        , start 0.000000, end_time 13722.331170
+
+SJF_-2
+perfect  11016  , start 100.000000, end_time 200.000000
+real_exp        , start 101.348345, end_time 226.789445
+
+perfect  11018  , start 200.000000, end_time 400.000000
+real_exp        , start 232.362251, end_time 466.418868
+
+perfect  11017  , start 100.000000, end_time 4400.000000
+real_exp        , start 100.000000, end_time 4444.305267
+
+perfect  11019  , start 200.000000, end_time 8400.000000
+real_exp        , start 227.258508, end_time 8395.260427
+
+perfect  11020  , start 200.000000, end_time 15400.000000
+real_exp        , start 229.198479, end_time 15266.251251
+
+SJF_-3
+perfect  11036  , start 200.000000, end_time 3110.000000
+real_exp        , start 196.795809, end_time 206.227977
+
+perfect  11033  , start 100.000000, end_time 3100.000000
+real_exp        , start 113.338635, end_time 3115.556451
+
+perfect  11037  , start 200.000000, end_time 3120.000000
+real_exp        , start 206.327522, end_time 3118.125854
+
+perfect  11038  , start 300.000000, end_time 7120.000000
+real_exp        , start 292.949839, end_time 7003.085410
+
+perfect  11039  , start 400.000000, end_time 11120.000000
+real_exp        , start 398.927660, end_time 10962.440557
+
+perfect  11034  , start 100.000000, end_time 16120.000000
+real_exp        , start 100.000000, end_time 15840.113033
+
+perfect  11035  , start 100.000000, end_time 23120.000000
+real_exp        , start 103.317280, end_time 22667.016694
+
+perfect  11040  , start 500.000000, end_time 32120.000000
+real_exp        , start 485.017499, end_time 31393.192940
+
+SJF_-4
+perfect  11053  , start 0.000000, end_time 3000.000000
+real_exp        , start 0.000000, end_time 2972.158172
+
+perfect  11054  , start 1000.000000, end_time 4000.000000
+real_exp        , start 985.494050, end_time 3953.321511
+
+perfect  11055  , start 2000.000000, end_time 8000.000000
+real_exp        , start 1912.721740, end_time 7884.739305
+
+perfect  11061  , start 7000.000000, end_time 9000.000000
+real_exp        , start 6832.650555, end_time 8867.118822
+
+perfect  11060  , start 5000.000000, end_time 11000.000000
+real_exp        , start 4926.751184, end_time 10814.959741
+
+SJF_-5
+perfect  11070  , start 0.000000, end_time 2000.000000
+real_exp        , start 0.000000, end_time 1988.427566
+
+perfect  11071  , start 500.000000, end_time 2500.000000
+real_exp        , start 496.245711, end_time 2469.316620
+
+perfect  11072  , start 1000.000000, end_time 3000.000000
+real_exp        , start 971.907088, end_time 2957.672567
+
+perfect  11073  , start 1500.000000, end_time 3500.000000
+real_exp        , start 1427.572859, end_time 3450.647035
+
+PSJF_-1
+perfect  11087  , start 3000.000000, end_time 6000.000000
+real_exp        , start 2928.889926, end_time 5908.583741
+
+perfect  11086  , start 2000.000000, end_time 10000.000000
+real_exp        , start 1985.245501, end_time 9877.223188
+
+perfect  11085  , start 1000.000000, end_time 16000.000000
+real_exp        , start 1028.103902, end_time 15783.049871
+
+perfect  11084  , start 0.000000, end_time 25000.000000
+real_exp        , start 0.000000, end_time 24590.126999
+
+PSJF_-2
+perfect  11099  , start 1000.000000, end_time 2000.000000
+real_exp        , start 958.303814, end_time 1938.316676
+
+perfect  11098  , start 0.000000, end_time 4000.000000
+real_exp        , start 0.000000, end_time 3923.061254
+
+perfect  11105  , start 5000.000000, end_time 7000.000000
+real_exp        , start 4876.319252, end_time 6834.799829
+
+perfect  11106  , start 7000.000000, end_time 8000.000000
+real_exp        , start 6837.858263, end_time 7816.553573
+
+perfect  11104  , start 2000.000000, end_time 11000.000000
+real_exp        , start 1938.678724, end_time 10759.501049
+
+PSJF_-3
+perfect  11116  , start 500.000000, end_time 1000.000000
+real_exp        , start 506.833081, end_time 1000.215635
+
+perfect  11117  , start 1000.000000, end_time 1500.000000
+real_exp        , start 1000.506646, end_time 1493.033698
+
+perfect  11118  , start 1500.000000, end_time 2000.000000
+real_exp        , start 1493.844992, end_time 1989.945426
+
+perfect  11115  , start 0.000000, end_time 3500.000000
+real_exp        , start 0.000000, end_time 3466.581140
+
+PSJF_-4
+perfect  11131  , start 100.000000, end_time 1100.000000
+real_exp        , start 108.378165, end_time 1203.842633
+
+perfect  11130  , start 0.000000, end_time 3000.000000
+real_exp        , start 0.169515, end_time 3069.956894
+
+perfect  11132  , start 200.000000, end_time 7000.000000
+real_exp        , start 217.255729, end_time 6985.145914
+
+perfect  11129  , start 0.000000, end_time 14000.000000
+real_exp        , start 0.000000, end_time 13797.211830
+
+PSJF_-5
+perfect  11143  , start 100.000000, end_time 200.000000
+real_exp        , start 109.084602, end_time 210.324996
+
+perfect  11145  , start 200.000000, end_time 400.000000
+real_exp        , start 214.010880, end_time 414.003519
+
+perfect  11144  , start 100.000000, end_time 4400.000000
+real_exp        , start 100.000000, end_time 4316.616416
+
+perfect  11146  , start 200.000000, end_time 8400.000000
+real_exp        , start 216.594307, end_time 8211.572174
+
+perfect  11147  , start 200.000000, end_time 15400.000000
+real_exp        , start 211.623951, end_time 15045.087073
+
