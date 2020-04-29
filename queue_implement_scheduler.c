@@ -268,6 +268,6 @@ int main(){
 		ERR_EXIT("Policy Not found!");
 	}
 	task(strategy);
-	syscall(SYS_PRINTK,0,0,0);
+	//syscall(SYS_PRINTK,0,0,0);
 	//puts("Done!!!");
 }
