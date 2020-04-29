@@ -115,7 +115,7 @@ int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer
 }
 */
 
-void insert(int strategy, Process **head, Process **tail, Process *p){
+void insert(int strategy, Process **head, Process **tail, Process *p, int run_process){
 	if(!(*head)){
 		*head = p;
 		*tail = p;
@@ -128,9 +128,19 @@ void insert(int strategy, Process **head, Process **tail, Process *p){
 			break;
 						   }
 		case SJF:{
+			if(run_process==-1){
+				if(p->exec < (*head)->exec){
+					p->next = *head;
+					*head = p;
+					if(!p->next){
+						*tail = p;
+					}
+					return;
+				}
+			}
 			Process *h;
 			h = *head;
-			while(h->next && p->exec > h->next->exec){
+			while(h->next && p->exec >= h->next->exec){
 				h = h->next;
 			}
 			p->next = h->next;
@@ -146,7 +156,7 @@ void insert(int strategy, Process **head, Process **tail, Process *p){
 				*head = p;
 			} else{
 				Process *h = *head;
-				while(h->next && p->exec > h->next->exec){
+				while(h->next && p->exec >= h->next->exec){
 					h = h->next;
 				}
 				p->next = h->next;
@@ -174,7 +184,6 @@ int get(Process **head, Process **tail, int timer, int strategy){
 			if(!(*head)) return -1;
 			//printf("%d %d\n", timer, (*head)->start);
 			if ((*head)!=(*tail) && (timer-((*head)->start))%RR_CYCLE == 0){
-				printf("RR cycle");
 				if((*head)->next){
 					(*tail)->next = (*head);
 					(*tail) = (*head);
@@ -219,7 +228,7 @@ void task(int strategy){
 			if(p[i].ready == timer){
 				printf("Create new process %s at %d\n", p[i].name, timer);
 				//p[i].pid = createProcess(p[i]);
-				insert(strategy, &head, &tail, &p[i]);
+				insert(strategy, &head, &tail, &p[i], run_process);
 				//printf("%s %d create\n", p[i].name, p[i].pid);
 			}
 		}

@@ -25,6 +25,7 @@
 #define PSJF 3
 #define SYS_PRINTK 334
 #define SYS_TIME 333
+#define RR_CYCLE 50
 
 typedef struct process{
 	char name[MAX_PROCESS];
@@ -80,7 +81,7 @@ int createProcess(Process p){
 }
 int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer){
 	if (strategy == FIFO){
-		if (run_process > -1){
+		if (run_process != -1){
 			return run_process;
 		} for(int i = 0; i < N; i++){
 			if (p[i].exec > 0 && p[i].pid > 0){
@@ -89,25 +90,50 @@ int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer
 			}
 		}
 	} else if (strategy == RR){
-		if ((timer - p[run_process].start) % 500 == 0){
-			do{
-				run_process = (run_process+1)%N;
-			} while(p[run_process].pid == -1 || p[run_process].exec == 0);
+		if (run_process==-1 || (timer - p[run_process].start) % RR_CYCLE == 0){
+			int flag = -1;
+			for(int i = run_process+1; i < run_process+N+1; i++){
+				if(p[i%N].pid != -1 && p[i%N].exec > 0){
+					run_process = i%N;
+					flag = i%N;
+					break;
+				}
+			}
+			if(flag == -1) run_process = -1;
 		} return run_process;
 	} else if (strategy == SJF){
-		if (run_process > -1){
+		if (run_process != -1){
 			return run_process;
-		} for(int i = 0; i < N; i++){
-			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
-				run_process = i;
+		}
+		else if (run_process ==-1){
+			int ptr = 10000000;
+			for(int i = 0; i < N; i++){
+				if(p[i].pid > -1 && p[i].exec > 0 ){
+					if(p[i].exec < ptr){
+						ptr = p[i].exec;
+						run_process = i;
+					}
+				}
 			}
 		} return run_process;
 	} else if (strategy == PSJF){
-		for(int i = 0; i < N; i++){
-			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
-				run_process = i;
-			}
-		} return run_process;
+	   	if(run_process ==-1){
+			int ptr = 100000000;
+			for(int i = 0; i < N; i++){
+				if(p[i].pid > -1 && p[i].exec > 0 ){
+					if(p[i].exec < ptr){
+						ptr = p[i].exec;
+						run_process = i;
+					}
+				}
+			} return run_process;
+		} else{
+			for(int i = 0; i < N; i++){
+				if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
+					run_process = i;
+				}
+			} return run_process;
+		}
 	} return -1;
 }
 
@@ -129,28 +155,31 @@ void task(int strategy){
 	while(all_process > 0){
 		if(run_process != -1 && p[run_process].exec == 0){
 			//waitpid(p[run_process].pid, NULL, 0);
+			printf("%s end at %d\n", p[run_process].name, timer);
 			run_process = -1;
 			all_process--;
 		}
 		for(int i = 0; i < N; i++){
 			if(p[i].ready == timer){
-				printf("Create new process at %d\n", timer);
-				p[i].pid = createProcess(p[i]);
-				printf("%d\n", p[i].pid);
+				printf("Create new process %s at %d\n", p[i].name, timer);
+				//p[i].pid = createProcess(p[i]);
+				p[i].pid = 1;
+				//printf("%d\n", p[i].pid);
 			}
 		}
 		int todo = next(N, strategy, p, run_process, timer);
-		printf("todo %d\n", todo);
+		//printf("todo %d\n", todo);
 		if (run_process != todo){
-			setPriority(p[todo].pid, PRIORITY_HIGH);
+			//setPriority(p[todo].pid, PRIORITY_HIGH);
 			p[todo].start = timer;
 			if (run_process != -1){
-				setPriority(p[run_process].pid, PRIORITY_LOW);
+				//setPriority(p[run_process].pid, PRIORITY_LOW);
+				printf("%s be preempt at %d by %s\n", p[run_process].name, timer, p[todo].name);
 				p[run_process].start = -1;
 			}
 			run_process = todo;
 		}
-		UNIT_TIME();
+		//UNIT_TIME();
 		if (run_process != -1){
 			p[run_process].exec--;
 		}
@@ -163,6 +192,7 @@ int main(){
 	if(scanf("%s", schdule_type) < 0){
 		ERR_EXIT("scanf error");
 	}
+	/*
 	struct rlimit old, new;
 	new.rlim_cur = RLIM_INFINITY;
 	new.rlim_max = RLIM_INFINITY;
@@ -176,9 +206,7 @@ int main(){
 	//a = getrlimit(RLIMIT_CPU, &old);
 	useCpu(getpid(), CPU_PARENT);
 	setPriority(getpid(), PRIORITY_HIGH);
-	long long c = 10;
-	while(c--)printf("%d\n", getpid());
-	/*
+	*/
 	int strategy;
 	if (strcmp(schdule_type, "FIFO")==0){
 		strategy = FIFO;
@@ -192,6 +220,5 @@ int main(){
 		ERR_EXIT("Policy Not found!");
 	}
 	task(strategy);
-	*/
-	//puts("Done!!!");
+	puts("Done!!!");
 }
