@@ -1,11 +1,12 @@
 
-all: main
+all: scheduler
 
-main:
-	gcc -O2 main.c -o main
+scheduler:
+	gcc -O2 for_implement.c -o for_implement
+	gcc -O2 queue_implement.c -o queue_implement
 
 clean:
-	@rm main
+	@rm for_implement queue_implement
 
 run:
-	sudo ./main
+	sudo ./for_implement

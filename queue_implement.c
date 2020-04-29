@@ -14,18 +14,18 @@
 #define ERR_EXIT(a){perror(a); exit(-1);}
 #define MAX_PROCESS 32
 #define UNIT_TIME() { volatile unsigned long i; for(i=0;i<1000000UL;i++);} 
-#define PRIORITY_INIT 50
 #define PRIORITY_HIGH 90
-#define PRIORITY_LOW 1
+#define PRIORITY_OCCUPY 95
+#define PRIORITY_LOW 0
 #define CPU_PARENT 0
 #define CPU_CHILD 1
-#define RR_CYCLE 50
+#define RR_CYCLE 500
 #define FIFO 0
 #define RR 1
 #define SJF 2
 #define PSJF 3
-#define SYS_PRINTK 334
 #define SYS_TIME 333
+#define SYS_PRINTK 334
 
 typedef struct process{
 	char name[MAX_PROCESS];
@@ -44,12 +44,21 @@ void useCpu(int pid, int core){
 	}
 }
 
-void setPriority(int pid, int priority){
+void setPriority(int pid, int type,int priority){
 	struct sched_param param;
 	param.sched_priority = priority;
-	if (sched_setscheduler(pid, SCHED_FIFO, &param) < 0){
+	if (sched_setscheduler(pid, type, &param) < 0){
 		ERR_EXIT("sched_setscheduler fail");
 	}
+	/*
+	if(type == SCHED_IDLE){
+		setpriority(PRIO_PROCESS, pid, 39);
+	}
+	else{
+		setpriority(PRIO_PROCESS, pid, 0);
+
+	}
+	*/
 }
 int cmp(const void *p1, const void *p2){
 	Process *s1 = (Process*)p1, *s2 = (Process*)p2;
@@ -64,56 +73,20 @@ int createProcess(Process p){
 		ERR_EXIT("fork fail");
 	} else if (p.pid == 0){
 		int pid = getpid();
-		printf("Hi I am child %d\n", pid);
-		setPriority(pid, PRIORITY_LOW);
 		long start_time = syscall(SYS_TIME);
 		for (int i = 0; i < p.exec; i++){
 			UNIT_TIME();
 		}
 		long end_time = syscall(SYS_TIME);
-		printf("Child %d is done %ld %ld\n", pid, start_time, end_time);
+		//printf("Child %d is done %ld %ld\n", pid, start_time, end_time);
 		syscall(SYS_PRINTK, pid, start_time, end_time);
-		syscall(878787);
 		printf("%s %d\n", p.name, pid);
 		exit(0);
 	}
+	setPriority(p.pid, SCHED_IDLE, PRIORITY_LOW);
 	useCpu(p.pid, CPU_CHILD);
 	return p.pid;
 }
-/*
-int next(int N, int strategy, Process p[MAX_PROCESS], int run_process, int timer){
-	if (strategy == FIFO){
-		if (run_process > -1){
-			return run_process;
-		} for(int i = 0; i < N; i++){
-			if (p[i].exec > 0 && p[i].pid > 0){
-				//printf("%s run\n", p[i].name);
-				return i;
-			}
-		}
-	} else if (strategy == RR){
-		if ((timer - p[run_process].start) % 500 == 0){
-			do{
-				run_process = (run_process+1)%N;
-			} while(p[run_process].pid == -1 || p[run_process].exec == 0);
-		} return run_process;
-	} else if (strategy == SJF){
-		if (run_process > -1){
-			return run_process;
-		} for(int i = 0; i < N; i++){
-			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
-				run_process = i;
-			}
-		} return run_process;
-	} else if (strategy == PSJF){
-		for(int i = 0; i < N; i++){
-			if(p[i].pid > -1 && p[i].exec > 0 && p[i].exec < p[run_process].exec){
-				run_process = i;
-			}
-		} return run_process;
-	} return -1;
-}
-*/
 
 void insert(int strategy, Process **head, Process **tail, Process *p, int run_process){
 	if(!(*head)){
@@ -182,15 +155,12 @@ int get(Process **head, Process **tail, int timer, int strategy){
 		} 
 		case RR:{
 			if(!(*head)) return -1;
-			//printf("%d %d\n", timer, (*head)->start);
 			if ((*head)!=(*tail) && (timer-((*head)->start))%RR_CYCLE == 0){
 				if((*head)->next){
 					(*tail)->next = (*head);
 					(*tail) = (*head);
 					(*head) = (*head)->next;
 					(*tail)->next = NULL;
-					//Process *t = (*head);
-					//t->next = NULL;
 				}
 			}
 			return (*head)->id;
@@ -201,6 +171,7 @@ int get(Process **head, Process **tail, int timer, int strategy){
 
 void task(int strategy){
 	int N;
+	FILE *perfect = fopen("Vperfect.txt", "w+");
 	Process *head = NULL, *tail = NULL;
 	if(scanf("%d", &N) < 0){
 		ERR_EXIT("scanf error");
@@ -215,44 +186,53 @@ void task(int strategy){
 		p[i].id = i;
 	}
 	qsort(p, N, sizeof(Process),cmp);
-	int timer = 0, all_process = N, run_process = -1;
+	int timer = 0, all_process = N, run_process = -1, has_job=-1;
 	while(all_process > 0){
 		if(run_process != -1 && p[run_process].exec == 0){
-			printf("%s end at %d\n", p[run_process].name, timer);
-			//waitpid(p[run_process].pid, NULL, 0);
+			fprintf(perfect, "%d end at %d\n", p[run_process].pid, timer);
+			fflush(perfect);
+			fprintf(stderr, "%d end at %d\n", p[run_process].pid, timer);
+			waitpid(p[run_process].pid, NULL, 0);
 			run_process = -1;
 			all_process--;
 			head = head->next;
 		}
 		for(int i = 0; i < N; i++){
 			if(p[i].ready == timer){
-				printf("Create new process %s at %d\n", p[i].name, timer);
-				//p[i].pid = createProcess(p[i]);
+				p[i].pid = createProcess(p[i]);
+				//setPriority(p[i].pid, SCHED_IDLE, PRIORITY_LOW);
 				insert(strategy, &head, &tail, &p[i], run_process);
-				//printf("%s %d create\n", p[i].name, p[i].pid);
+				if(has_job==-1){
+					has_job = timer;
+				}
+				fprintf(perfect,"Create new process %d at %d\n", p[i].pid, timer);
+				fprintf(stderr, "Create new process %d at %d\n", p[i].pid, timer);
+				fflush(perfect);
 			}
 		}
 		int todo = get(&head, &tail, timer, strategy);
-		//next(N, strategy, p, run_process, timer);
-		//printf("todo %d\n", todo);
 		if (run_process != todo){
-			//setPriority(p[todo].pid, PRIORITY_HIGH);
+			if(todo != -1){
+				setPriority(p[todo].pid, SCHED_OTHER, PRIORITY_LOW);
+			}
 			p[todo].start = timer;
 			//printf("%s %d run\n", p[todo].name, p[todo].pid);
 			if (run_process != -1){
-				//setPriority(p[run_process].pid, PRIORITY_LOW);
-				printf("%s be preempt at %d by %s\n", p[run_process].name, timer, p[todo].name);
+				setPriority(p[run_process].pid, SCHED_IDLE,PRIORITY_LOW);
+				//ity(p[run_process].pid, SCHED_FIFO,PRIORITY_LOW);
+				//fprintf(perfect,"%s be preempt at %d by %s\n", p[run_process].name, timer, p[todo].name);
 				p[run_process].start = -1;
 			}
 			run_process = todo;
 		}
-		//UNIT_TIME();
+		UNIT_TIME();
 		//printf("time: %d run %s\n", timer, p[run_process].name);
 		if (run_process != -1){
 			p[run_process].exec--;
 		}
 		timer++;
 	}
+	fprintf(perfect, "Real start: %d\n", has_job);
 }
 
 int main(){
@@ -260,7 +240,6 @@ int main(){
 	if(scanf("%s", schdule_type) < 0){
 		ERR_EXIT("scanf error");
 	}
-	/*
 	struct rlimit old, new;
 	new.rlim_cur = RLIM_INFINITY;
 	new.rlim_max = RLIM_INFINITY;
@@ -270,14 +249,12 @@ int main(){
 	if(setrlimit(RLIMIT_RTTIME, &new) < 0){
 		ERR_EXIT("set resorce error");
 	}
-	*/
 	//set cpu usege to infinity
 	//a = getrlimit(RLIMIT_CPU, &old);
-	//useCpu(getpid(), CPU_PARENT);
-	//setPriority(getpid(), PRIORITY_HIGH);
-	//long long c = 10;
-	//while(c--)printf("%d\n", getpid());
-	
+	useCpu(getpid(), CPU_PARENT);
+	setPriority(getpid(), SCHED_FIFO, PRIORITY_HIGH);
+	fprintf(stderr,"Scheduler pid %d\n", getpid());
+
 	int strategy;
 	if (strcmp(schdule_type, "FIFO")==0){
 		strategy = FIFO;
@@ -291,6 +268,6 @@ int main(){
 		ERR_EXIT("Policy Not found!");
 	}
 	task(strategy);
-	
+	syscall(SYS_PRINTK,0,0,0);
 	//puts("Done!!!");
 }
