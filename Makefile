@@ -2,11 +2,8 @@
 all: scheduler
 
 scheduler:
-	gcc -O2 for_implement.c -o for_implement
-	gcc -O2 queue_implement.c -o queue_implement
+	gcc -O2 queue_implement_scheduler.c -o queue_implement_scheduler
 
 clean:
-	@rm for_implement queue_implement
+	@rm queue_implement_scheduler
 
-run:
-	sudo ./for_implement
